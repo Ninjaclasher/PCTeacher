@@ -1,0 +1,12 @@
+.idea
+.vscode
+.sass-cache
+*.sqlite3
+*.py[co]
+*.mo
+*~
+static
+siteenv
+restart
+uwsgi.ini
+uwsgi_params

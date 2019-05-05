@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% load markdown %}
+
+{% block header_extra %}
+    {{ lesson.topic.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="progress">
+        <div class="green progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{ sublessons.done }}" aria-valuemin="0" aria-valuemax="{{ sublessons.total }}" style="width: {{ sublessons.percentage }}%"></div>
+    </div>
+    <br>
+    <div class="text">
+        <h3>{{ lesson.title }}</h3>
+        <p>{{ sublesson.content|markdown:'problem'|safe|linebreaks }}</p>
+    </div>
+
+    {% if problems.correct < problems.total %}
+        <br><br>
+ 
+        <h3>Example: {{ sublesson.example_title }}</h3>
+        {{ example|safe }}
+        
+        <hr>
+        
+        <div class="container">
+            {% if problems.attempted %}
+                <div class="alert alert-danger" role="alert">
+                    Your answer was wrong! Try again!
+                </div>
+                <br>
+            {% endif %}
+
+            <p>Click the button to show the practise question and answer.</p>
+
+            <b>Solved {{ problems.correct }} / {{ problems.total }} problems.</b>
+            <br>
+            <button type="button" class="btn btn-success green" data-toggle="collapse" data-target="#bb">Open Practise Questions</button>
+            <div id="bb" class="collapse {% if problems.attempted %} in show {% endif %}">
+                <br>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="answerInput">{{ question|markdown:'problem'|safe }}</label> =
+                        <input type="text" id="answerInput" required name="answer" value={{ user_answer }}>
+                        <br>
+                        <input type="submit" class="btn btn-success green" value="Submit">
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-success" role="alert">
+            Correct answer!
+            {% if next_sublesson %}
+                <a href="{% url 'sublesson' lesson.id next_sublesson.id %}">Proceed to the next lesson.</a>
+            {% else %}
+                Congrulations! You finished this lesson. <a href="/">Go home.</a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

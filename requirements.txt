@@ -1,0 +1,9 @@
+Django>=2.2
+django-crispy-forms
+django_jinja2
+Jinja2
+lxml
+mistune
+num2words
+uwsgi
+mysqlclient

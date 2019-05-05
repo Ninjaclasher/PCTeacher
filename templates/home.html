@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block media_end_js %}
+    {% if user.is_authenticated %}
+        <script type="text/javascript">
+            data = {{ chart_data|safe }};
+            $(function () {
+                var ctx = $('#graph').find('canvas').get(0).getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: data,
+                    options: {
+                        maintainAspectRatio: false,
+                    }
+                });
+            });
+        </script>
+    {% endif %}
+{% endblock%}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        {% if user.first_name %}
+            <h3>Welcome, {{ user.first_name }}!</h3>
+        {% else %}
+            <h3>Welcome, {{ user.username }}!</h3>
+        {% endif %}
+    {% else %}
+        <h3>Welcome!</h3>
+    {% endif %}
+    <p>PCTeacher is a learning platform specially designed to adapt to your learning style. Click below to select the lesson which you would like to start with, and PCTeacher will automatically adjust to your learning style as you go along.</p>
+
+    <div class="jumbotron">
+        <h5>Lessons</h5>
+        {% for lesson in lessons %}
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="id_{{lesson.title}}">
+                <label class="custom-control-label" for="id_{{lesson.title}}">
+                <section style="font-size: 20px">
+                    <a href="{% url 'lesson' lesson.id %}">
+                        {{ lesson.title }}
+                    </a>
+                    <br>
+                </section>
+                </label>
+            </div>
+        {% endfor %}
+    </div>
+    <div id="graph">
+        <canvas width="300" height="300"></canvas>
+    </div>
+{% endblock %}
